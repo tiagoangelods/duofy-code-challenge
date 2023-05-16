@@ -5,13 +5,16 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import NewListDialog from './components/list/NewList';
 import NewTaskDialog from './components/task/NewTask';
+import DeleteTaskDialog from './components/task/DeleteTask';
 import { reorderList, getAllLists, selectLists } from './reducers/listSlice';
-import { getAllTasks, selectTasks } from './reducers/taskSlice';
+import { deleteTask, getAllTasks, selectTasks } from './reducers/taskSlice';
 
 function App() {
   const dispatch = useDispatch();
   const [newListOpen, setNewListOpen] = React.useState(false);
   const [newTaskOpen, setNewTaskOpen] = React.useState(false);
+  const [deleteTaskOpen, setDeleteTaskOpen] = React.useState(false);
+  const [taskToDelete, setTaskToDelete] = React.useState<string | null>(null);
   const lists = useSelector(selectLists);
   const tasks = useSelector(selectTasks);
 
@@ -21,6 +24,14 @@ function App() {
     dispatch(getAllLists() as any);
     dispatch(getAllTasks() as any);
   }, []);
+
+  const handleDeleteTask = async () => {
+    const delTask = await dispatch(deleteTask({ id: taskToDelete }) as any);
+    if (delTask?.payload?.status === 200) {
+      setDeleteTaskOpen(false);
+      setTaskToDelete(null);
+    }
+  }
 
   return (
     <div className="App">
@@ -81,7 +92,7 @@ function App() {
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                             >
-                              <Card sx={{ minWidth: 275 }}>
+                              <Card>
                                 <CardContent>
                                   <Typography>
                                     {taskElement?.title}
@@ -98,7 +109,10 @@ function App() {
                                 </CardContent>
                                 <CardActions>
                                   <Button size="small">Edit</Button>
-                                  <Button size="small">Delete</Button>
+                                  <Button size="small" onClick={() => {
+                                    setTaskToDelete(taskElement?._id);
+                                    setDeleteTaskOpen(true);
+                                  }}>Delete</Button>
                                 </CardActions>
                               </Card>
                             </Box>
@@ -123,6 +137,14 @@ function App() {
           open={newTaskOpen}
           onClose={() => setNewTaskOpen(false)}
           lists={lists}
+        />
+        <DeleteTaskDialog
+          open={deleteTaskOpen}
+          onClose={() => {
+            setDeleteTaskOpen(false);
+            setTaskToDelete(null)}
+          }
+          onSave={() => handleDeleteTask()}
         />
       </Box>
     </div>

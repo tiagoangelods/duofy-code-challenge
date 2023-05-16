@@ -5,7 +5,7 @@ export type ListDocument = HydratedDocument<List>;
 
 @Schema()
 export class List {
-  @Prop()
+  @Prop({ required: true })
   name: string;
 
   @Prop()

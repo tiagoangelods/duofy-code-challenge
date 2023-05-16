@@ -52,7 +52,8 @@ export const listSlice = createSlice({
     builder.addCase(getAllLists.fulfilled, (state: any, action: any) => {
       const { payload } = action;
       if (payload?.length > 0) {
-        state = [...payload];
+        const orderedList = payload.sort((a: any, b: any) => (a.order > b.order) ? 1 : -1)
+        state = [...orderedList];
       }
       return state;
     }),

@@ -17,6 +17,14 @@ export const addTask = createAsyncThunk(
   }
 );
 
+export const deleteTask = createAsyncThunk(
+  'task/delete',
+  async ({ id }: any) => {
+    const response = await baseApi.delete(`/tasks/${id}`);
+    return { ...response.data, id};
+  }
+);
+
 export const taskSlicer = createSlice({
   name: 'tasks',
   initialState: [],
@@ -26,7 +34,8 @@ export const taskSlicer = createSlice({
     builder.addCase(getAllTasks.fulfilled, (state: any, action: any) => {
       const { payload } = action;
       if (payload?.length > 0) {
-        state = [...payload];
+        const orderedTasks = payload.sort((a: any, b: any) => (a.order > b.order) ? 1 : -1)
+        state = [...orderedTasks];
       }
       return state;
     }),
@@ -34,6 +43,13 @@ export const taskSlicer = createSlice({
       const { payload } = action
       if (payload?.id) {
         state = [...state, { ...payload, _id: payload?.id }];
+      }
+      return state;
+    }),
+    builder.addCase(deleteTask.fulfilled, (state: any, action: any) => {
+      const { payload } = action
+      if (payload?.status === 200) {
+        state = state?.filter((task: any) => task?._id !== payload?.id);
       }
       return state;
     })

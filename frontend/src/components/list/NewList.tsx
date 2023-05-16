@@ -15,10 +15,9 @@ export default function NewListDialog({ open, onClose, lists }: any) {
   const dispatch = useDispatch();
   const { handleSubmit, register, formState: {errors} } = useForm();
   const [listName, setListName] = React.useState('');
-  const [listOrder, setListOrder] = React.useState(1);
 
   const handleSave = async () => {
-    const add = await dispatch(addList({ name: listName, order: listOrder }) as any);
+    const add = await dispatch(addList({ name: listName, order: lists?.length + 1 }) as any);
     if (add?.payload?.status === 200) {
       onClose();
     }
@@ -45,22 +44,6 @@ export default function NewListDialog({ open, onClose, lists }: any) {
                 ...register('listName', { required: true })
               }}
             />
-            <TextField
-              style={{ marginLeft: 12, maxWidth: 120 }}
-              type="number"
-              label="order"
-              name="listOrder"
-              variant="outlined"
-              error={errors.listOrder?.type === 'required'}
-              value={listOrder}
-              onChange={({ target: { value }}) => setListOrder(value as any)}
-              inputProps={{
-                min: 1,
-                max: (lists?.length + 1),
-                ...register('listOrder', { required: true, min: 1, max: (lists?.length + 1) }),
-              }}
-            />
-          
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
