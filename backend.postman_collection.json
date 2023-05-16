@@ -1,0 +1,215 @@
+{
+	"info": {
+		"_postman_id": "05a1fc7d-e5e2-49aa-80cb-a088d561cb59",
+		"name": "backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7945592"
+	},
+	"item": [
+		{
+			"name": "lists",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/lists",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "new list",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"list one\",\n    \"order\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/lists",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get one list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/lists/64512647ebcac26b9ca5f756",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"lists",
+								"64512647ebcac26b9ca5f756"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update list",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/lists/64512647ebcac26b9ca5f756",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"lists",
+								"64512647ebcac26b9ca5f756"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete list",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/lists/645138249ce8814f915a68b4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"lists",
+								"645138249ce8814f915a68b4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tasks",
+			"item": [
+				{
+					"name": "create task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"test task\",\n    \"description\": \"a simple task\",\n    \"dueDate\": 1683049139,\n    \"priority\": 0,\n    \"list\": \"645138249ce8814f915a68b4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tasks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all tasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tasks/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tasks",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update task",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"a simple task description\",\n    \"list\": \"645138249ce8814f915a68b4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tasks/64514eac85bdc6ef94d3e190",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tasks",
+								"64514eac85bdc6ef94d3e190"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tasks/64514eac85bdc6ef94d3e190",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tasks",
+								"64514eac85bdc6ef94d3e190"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
