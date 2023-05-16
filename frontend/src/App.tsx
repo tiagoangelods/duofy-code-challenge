@@ -6,9 +6,8 @@ import classNames from 'classnames';
 import NewListDialog from './components/list/NewList';
 import NewTaskDialog from './components/task/NewTask';
 import DeleteTaskDialog from './components/task/DeleteTask';
-import { reorderList, getAllLists, selectLists } from './reducers/listSlice';
-import { deleteTask, editTask, getAllTasks, selectTasks } from './reducers/taskSlice';
-import { move, reorder } from './utils';
+import { getAllLists, selectLists } from './reducers/listSlice';
+import { deleteTask, editTask, getAllTasks, reorderTasks, selectTasks } from './reducers/taskSlice';
 
 function App() {
   const dispatch = useDispatch();
@@ -41,7 +40,7 @@ function App() {
     if (!destination) {
       return;
     }
-    if(destination?.droppableId !== source?.droppableId) {
+    if(destination?.droppableId !== source?.droppableId || destination?.index !== source?.index) {
       const destinationList = lists[Number(destination?.droppableId)]?._id;
       const task = tasks?.find((task: any) => task?._id === draggableId);
       if (task?._id === draggableId) {
@@ -55,7 +54,7 @@ function App() {
         }) as any);
       }
     }
-    
+    dispatch(reorderTasks);
   }
 
   return (
@@ -103,7 +102,11 @@ function App() {
                     {...provided.droppableProps}
                   >
                     {
-                      tasks && tasks?.filter((taskElement: any) => taskElement?.list === listElement?._id).map((taskElement: any, taskIndex: any) => (
+                      tasks && tasks?.filter((taskElement: any) => taskElement?.list === listElement?._id)
+                      .sort((a: any, b:any) => {
+                        return a?.order - b?.order;
+                      })
+                      .map((taskElement: any, taskIndex: any) => (
                         <Draggable
                           key={taskElement._id}
                           draggableId={taskElement._id}

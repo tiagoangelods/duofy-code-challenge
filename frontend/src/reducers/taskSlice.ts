@@ -35,7 +35,16 @@ export const deleteTask = createAsyncThunk(
 export const taskSlicer = createSlice({
   name: 'tasks',
   initialState: [],
-  reducers: {},
+  reducers: {
+    reorderTasks: (state: any, action: any) => {
+      const { payload } = action;
+      if (payload?.length > 0) {
+        const orderedTasks = payload.sort((a: any, b: any) => (a.order > b.order) ? 1 : -1)
+        state = [...orderedTasks];
+      }
+      return state;
+    }
+  },
   extraReducers: (builder) =>{
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     builder.addCase(getAllTasks.fulfilled, (state: any, action: any) => {
@@ -75,4 +84,6 @@ export const taskSlicer = createSlice({
 
 export const selectTasks = (state: any) => state.tasks;
 
-export default taskSlicer.reducer
+export const { reorderTasks } = taskSlicer.actions;
+
+export default taskSlicer.reducer;

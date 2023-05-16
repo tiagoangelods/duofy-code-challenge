@@ -23,28 +23,12 @@ export const listSlice = createSlice({
   initialState: [],
   reducers: {
     reorderList: (state: any, action: any) => {
-      const { source, destination } = action as any;
-    
-      // dropped outside the list
-      if (!destination) {
-        return;
+      const { payload } = action;
+      if (payload?.length > 0) {
+        const orderedList = payload.sort((a: any, b: any) => (a.order > b.order) ? 1 : -1)
+        state = [...orderedList];
       }
-      const sourceIndex = +source.droppableId;
-      const destinationIndex = +destination.droppableId;
-  
-      if (sourceIndex === destinationIndex) {
-        const items = reorder(state[sourceIndex], source.index, destination.index);
-        const newState = [...state];
-        newState[sourceIndex] = items;
-        state = newState;
-      } else {
-        const result = move(state[sourceIndex], state[destinationIndex], source, destination);
-        const newState = [...state];
-        newState[sourceIndex] = result[sourceIndex];
-        newState[destinationIndex] = result[destinationIndex];
-  
-        state = newState.filter(group => group.length);
-      }
+      return state;
     }
   },
   extraReducers: (builder) => {
@@ -69,7 +53,6 @@ export const listSlice = createSlice({
 
 export const selectLists = (state: any) => state.lists;
 
-// Action creators are generated for each case reducer function
 export const { reorderList } = listSlice.actions;
 
 export default listSlice.reducer;
