@@ -20,6 +20,9 @@ export class Task {
 
   @Prop({ default: Date.now() })
   createdDate: number;
+
+  @Prop({ default: 1 })
+  order: number;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

@@ -11,9 +11,16 @@ export const getAllTasks = createAsyncThunk(
 
 export const addTask = createAsyncThunk(
   'task/add',
-  async ({ title, dueDate, priority, list }: any) => {
-    const response = await baseApi.post('/tasks', { title, dueDate, priority, list });
-    return { ...response.data, title, dueDate, priority, list };
+  async ({ title, dueDate, priority, list, order }: any) => {
+    const response = await baseApi.post('/tasks', { title, dueDate, priority, list, order });
+    return { ...response.data, title, dueDate, priority, list, order };
+  }
+);
+export const editTask = createAsyncThunk(
+  'task/edit',
+  async ({ id, title, dueDate, priority, list, order }: any) => {
+    const response = await baseApi.patch(`/tasks/${id}`, { title, dueDate, priority, list, order });
+    return { ...response.data, title, order, dueDate, priority, list, id };
   }
 );
 
@@ -43,6 +50,16 @@ export const taskSlicer = createSlice({
       const { payload } = action
       if (payload?.id) {
         state = [...state, { ...payload, _id: payload?.id }];
+      }
+      return state;
+    }),
+    builder.addCase(editTask.fulfilled, (state: any, action: any) => {
+      const { payload } = action
+      if (payload?.id) {
+        const index = state?.findIndex((task: any) => task?._id === payload.id);
+        if (index > -1) {
+          state[index] = { ...payload, _id: payload?.id };
+        }
       }
       return state;
     }),

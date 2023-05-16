@@ -13,8 +13,9 @@ function App() {
   const dispatch = useDispatch();
   const [newListOpen, setNewListOpen] = React.useState(false);
   const [newTaskOpen, setNewTaskOpen] = React.useState(false);
+  const [taskEditOrNew, setTaskEditOrNew] = React.useState('new');
   const [deleteTaskOpen, setDeleteTaskOpen] = React.useState(false);
-  const [taskToDelete, setTaskToDelete] = React.useState<string | null>(null);
+  const [taskToChange, setTaskToChange] = React.useState<any>(null);
   const lists = useSelector(selectLists);
   const tasks = useSelector(selectTasks);
 
@@ -26,10 +27,10 @@ function App() {
   }, []);
 
   const handleDeleteTask = async () => {
-    const delTask = await dispatch(deleteTask({ id: taskToDelete }) as any);
+    const delTask = await dispatch(deleteTask({ id: taskToChange?._id }) as any);
     if (delTask?.payload?.status === 200) {
       setDeleteTaskOpen(false);
-      setTaskToDelete(null);
+      setTaskToChange(null);
     }
   }
 
@@ -48,7 +49,10 @@ function App() {
             disabled={lists?.length === 0}
             variant='outlined'
             color='inherit'
-            onClick={() => setNewTaskOpen(true)}
+            onClick={() => {
+              setNewTaskOpen(true);
+              setTaskEditOrNew('new');
+            }}
           >
             New Task
           </Button>
@@ -108,9 +112,13 @@ function App() {
                                   {taskElement?.priority === 2 && (<Alert severity="success">Low</Alert>)}
                                 </CardContent>
                                 <CardActions>
-                                  <Button size="small">Edit</Button>
                                   <Button size="small" onClick={() => {
-                                    setTaskToDelete(taskElement?._id);
+                                    setTaskEditOrNew('edit');
+                                    setTaskToChange(taskElement);
+                                    setNewTaskOpen(true);
+                                  }}>Edit</Button>
+                                  <Button size="small" onClick={() => {
+                                    setTaskToChange(taskElement);
                                     setDeleteTaskOpen(true);
                                   }}>Delete</Button>
                                 </CardActions>
@@ -135,6 +143,9 @@ function App() {
         />
         <NewTaskDialog
           open={newTaskOpen}
+          operation={taskEditOrNew}
+          selectedTask={taskToChange}
+          tasks={tasks}
           onClose={() => setNewTaskOpen(false)}
           lists={lists}
         />
@@ -142,7 +153,7 @@ function App() {
           open={deleteTaskOpen}
           onClose={() => {
             setDeleteTaskOpen(false);
-            setTaskToDelete(null)}
+            setTaskToChange(null)}
           }
           onSave={() => handleDeleteTask()}
         />

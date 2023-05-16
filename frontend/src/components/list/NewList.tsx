@@ -19,6 +19,7 @@ export default function NewListDialog({ open, onClose, lists }: any) {
   const handleSave = async () => {
     const add = await dispatch(addList({ name: listName, order: lists?.length + 1 }) as any);
     if (add?.payload?.status === 200) {
+      setListName('');
       onClose();
     }
   }

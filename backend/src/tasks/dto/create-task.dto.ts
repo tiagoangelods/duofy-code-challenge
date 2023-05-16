@@ -5,4 +5,5 @@ export class CreateTaskDto {
   dueDate: string;
   priority: number;
   list: List;
+  order: number;
 }

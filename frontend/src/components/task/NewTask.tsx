@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Button,
@@ -11,32 +12,69 @@ import {
   Select,
   TextField
 } from "@mui/material";
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ptBR } from '@mui/x-date-pickers/locales';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { addTask } from "../../reducers/taskSlice";
+import { addTask, editTask } from "../../reducers/taskSlice";
 
-export default function NewTaskDialog({ open, onClose, lists }: any) {
+export default function NewTaskDialog({ open, onClose, lists, tasks, operation, selectedTask }: any) {
   const dispatch = useDispatch();
   const { handleSubmit, register, formState: {errors} } = useForm();
   const [taskTitle, setTaskTitle] = React.useState<string>('');
-  const [taskDueDate, setTaskDueDate] = React.useState<string | null>('');
+  const [taskDueDate, setTaskDueDate] = React.useState<any>('');
   const [taskPriority, setTaskPriority] = React.useState<number | null>(2);
   const [taskList, setTaskList] = React.useState<string>('');
 
+  React.useEffect(() => {
+    if (operation === 'new') {
+      setTaskTitle('');
+      setTaskDueDate('');
+      setTaskPriority(2);
+      setTaskList('');
+    } else if (operation === 'edit' && selectedTask?._id) {
+      setTaskDueDate(new Date(selectedTask?.dueDate));
+      setTaskPriority(selectedTask?.priority);
+      setTaskList(selectedTask?.list);
+      setTaskTitle(selectedTask?.title);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTask, open]);
+
   const handleSave = async () => {
-    const add = await dispatch(addTask({ 
-      title: taskTitle,
-      dueDate: taskDueDate,
-      priority: taskPriority,
-      list: taskList
-    }) as any);
-    if (add?.payload?.status === 200) {
-      onClose();
+    if (operation === 'new') {
+      const add = await dispatch(addTask({ 
+        title: taskTitle,
+        dueDate: taskDueDate,
+        priority: taskPriority,
+        list: taskList,
+        order: (tasks?.filter((task: any) => task?.list === taskList)?.length + 1)
+      }) as any);
+      if (add?.payload?.status === 200) {
+        setTaskTitle('');
+        setTaskDueDate('');
+        setTaskPriority(2);
+        setTaskList('');
+        onClose();
+      }
+    } else if (operation === 'edit' && selectedTask?._id) {
+      const edit = await dispatch(editTask({ 
+        id: selectedTask?._id,
+        title: taskTitle,
+        dueDate: taskDueDate,
+        priority: taskPriority,
+        list: taskList,
+        order: selectedTask?.order || 1
+      }) as any);
+      if (edit?.payload?.status === 200) {
+        setTaskTitle('');
+        setTaskDueDate('');
+        setTaskPriority(2);
+        setTaskList('');
+        onClose();
+      }
     }
   }
 
