@@ -7,7 +7,8 @@ import NewListDialog from './components/list/NewList';
 import NewTaskDialog from './components/task/NewTask';
 import DeleteTaskDialog from './components/task/DeleteTask';
 import { reorderList, getAllLists, selectLists } from './reducers/listSlice';
-import { deleteTask, getAllTasks, selectTasks } from './reducers/taskSlice';
+import { deleteTask, editTask, getAllTasks, selectTasks } from './reducers/taskSlice';
+import { move, reorder } from './utils';
 
 function App() {
   const dispatch = useDispatch();
@@ -18,8 +19,6 @@ function App() {
   const [taskToChange, setTaskToChange] = React.useState<any>(null);
   const lists = useSelector(selectLists);
   const tasks = useSelector(selectTasks);
-
-  const onDragEnd = (result: any) => dispatch(reorderList(result));
 
   React.useEffect(() => {
     dispatch(getAllLists() as any);
@@ -32,6 +31,31 @@ function App() {
       setDeleteTaskOpen(false);
       setTaskToChange(null);
     }
+  }
+
+  const onDragEnd = async (result: any) => {
+    console.log('drag end', result);
+    const { source, destination, draggableId } = result;
+  
+    // dropped outside the list
+    if (!destination) {
+      return;
+    }
+    if(destination?.droppableId !== source?.droppableId) {
+      const destinationList = lists[Number(destination?.droppableId)]?._id;
+      const task = tasks?.find((task: any) => task?._id === draggableId);
+      if (task?._id === draggableId) {
+        await dispatch(editTask({ 
+          id: task?._id,
+          title: task?.title,
+          dueDate: task?.dueDate,
+          priority: task?.priority,
+          list: destinationList,
+          order: destination.index,
+        }) as any);
+      }
+    }
+    
   }
 
   return (

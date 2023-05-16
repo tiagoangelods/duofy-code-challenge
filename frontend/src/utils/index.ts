@@ -19,30 +19,3 @@ export const move = (source: any[], destination: any[], droppableSource: any, dr
 
   return result;
 };
-
-
-// export const onDragEnd = (result: any) => {
-//   console.log('drag end', result);
-//   const { source, destination } = result;
-
-//   // dropped outside the list
-//   if (!destination) {
-//     return;
-//   }
-//   const sInd = +source.droppableId;
-//   const dInd = +destination.droppableId;
-
-//   if (sInd === dInd) {
-//     const items = reorder(state[sInd], source.index, destination.index);
-//     const newState = [...state];
-//     newState[sInd] = items;
-//     setState(newState);
-//   } else {
-//     const result = move(state[sInd], state[dInd], source, destination);
-//     const newState = [...state];
-//     newState[sInd] = result[sInd];
-//     newState[dInd] = result[dInd];
-
-//     setState(newState.filter(group => group.length));
-//   }
-// }
